@@ -18,16 +18,22 @@ public class Enemy extends Character{
 	public static final String WARRIOR = "언데드 전사";
 	public static final String HUNTER = "언데드 사냥꾼";
 	public static final String E_WARRIOR = "정예 언데드 전사";
-	public static final String E_WARRIOR_SKILL = "출혈 베기";
-	public static final String E_HUNTER = "포효";
+	public static final String E_WARRIOR_SKILL = "돌격";
+	public static final String E_HUNTER = "정예 언데드 사냥꾼";
 	public static final String E_HUNTER_SKILL = "3연사";
-	public static final String E_CHIEF = "언데드 족장";
-	public static final String E_CHIEF_SKILL = "촉진";
+
+	public static final String GOLLEM = "돌골렘";
+	public static final String WAND = "지팡이";
+	public static final String WAND_SKILL = "마력 탄환";
+	public static final String E_GOLLEM = "완벽한 돌골렘";
+	public static final String E_GOLLEM_SKILL = "급속 재생";
+	public static final String E_WAND = "저주받은 지팡이";
+	public static final String E_WAND_SKILL = "저주 탄환";
 	
 	public static final String WARRIOR_SKULL = "전사의 해골";
 	public static final String WARRIOR_SKULL_SKILL = "강타";
-	public static final String MAGIC_CREATURE = "마법의 흉물";
-	public static final String MAGIC_CREATURE_SKILL = "포식";
+	public static final String UNDEAD_CHIEF = "언데드 족장";
+	public static final String UNDEAD_CHIEF_SKILL = "강령술";
 	public static final String BLACK_MAGE = "흑마법사";
 	public static final String BLACK_MAGE_SKILL = "저주";
 
@@ -49,37 +55,46 @@ public class Enemy extends Character{
 		allEnemyList.addAll(Arrays.asList(
 				floor1EnemyList, 
 				floor2EnemyList, 
-				floor3EnemyList));
+				floor3EnemyList
+				));
 		floor1EnemyList.addAll(Arrays.asList(
 				SKELETON,
 				SNAKE,
-				MOUSE));
+				MOUSE
+				));
 		floor2EnemyList.addAll(Arrays.asList(
 				WARRIOR,
 				HUNTER
 				));
 		floor3EnemyList.addAll(Arrays.asList(
+				GOLLEM,
+				WAND
 				));
 		
 		allEliteList.addAll(Arrays.asList(
 				floor1EliteList,
 				floor2EliteList,
-				floor3EliteList));
+				floor3EliteList
+				));
 		floor1EliteList.addAll(Arrays.asList(
 				E_SKELETON,
 				E_SNAKE,
-				E_MOUSE));
+				E_MOUSE
+				));
 		floor2EliteList.addAll(Arrays.asList(
 				E_WARRIOR,
-				E_HUNTER,
-				E_CHIEF));
+				E_HUNTER
+				));
 		floor3EliteList.addAll(Arrays.asList(
+				E_GOLLEM,
+				E_WAND
 				));
 		
 		allBossList.addAll(Arrays.asList(
 				WARRIOR_SKULL,
-				MAGIC_CREATURE,
-				BLACK_MAGE));
+				UNDEAD_CHIEF,
+				BLACK_MAGE
+				));
 	}
 	
 	public Enemy(String name) {
@@ -87,7 +102,7 @@ public class Enemy extends Character{
 		
 		switch(name) {
 		case SKELETON:
-			HP = 30;
+			HP = 20;
 			MHP = HP;
 			SP = 0;
 			MSP = 0;
@@ -110,7 +125,7 @@ public class Enemy extends Character{
 			MAP = 100;
 			HPG = 0;
 			SPG = 0;
-			ATK = 15;
+			ATK = 14;
 			DEF = 0;
 			SPD = 8;
 			EFC = 0;
@@ -125,45 +140,14 @@ public class Enemy extends Character{
 			MAP = 100;
 			HPG = 0;
 			SPG = 0;
-			ATK = 10;
+			ATK = 8;
 			DEF = 0;
 			SPD = 12;
-			EFC = 10;
+			EFC = 6;
 			skill = null;
 			break;
-		case WARRIOR:
-			HP = 45;
-			MHP = HP;
-			SP = 0;
-			MSP = 0;
-			AP = 0;
-			MAP = 100;
-			HPG = 0;
-			SPG = 0;
-			ATK = 15;
-			DEF = 15;
-			SPD = 12;
-			EFC = 10;
-			skill = null;
-			break;
-		case HUNTER:
-			HP = 30;
-			MHP = HP;
-			SP = 0;
-			MSP = 0;
-			AP = 0;
-			MAP = 100;
-			HPG = 0;
-			SPG = 0;
-			ATK = 40;
-			DEF = 0;
-			SPD = 6;
-			EFC = 10;
-			skill = null;
-			break;
-			
 		case E_SKELETON:
-			HP = 60;
+			HP = 40;
 			MHP = HP;
 			SP = 0;
 			MSP = 30;
@@ -171,10 +155,10 @@ public class Enemy extends Character{
 			MAP = 100;
 			HPG = 0;
 			SPG = 10;
-			ATK = 15;
-			DEF = 15;
+			ATK = 14;
+			DEF = 14;
 			SPD = 12;
-			EFC = 10;
+			EFC = 6;
 			skill = E_SKELETON_SKILL;
 			break;
 		case E_SNAKE:
@@ -189,7 +173,7 @@ public class Enemy extends Character{
 			ATK = 22;
 			DEF = 0;
 			SPD = 10;
-			EFC = 10;
+			EFC = 6;
 			skill = E_SNAKE_SKILL;
 			break;
 		case E_MOUSE:
@@ -201,57 +185,12 @@ public class Enemy extends Character{
 			MAP = 100;
 			HPG = 0;
 			SPG = 10;
-			ATK = 15;
+			ATK = 14;
 			DEF = 0;
 			SPD = 14;
-			EFC = 20;
+			EFC = 12;
 			skill = E_MOUSE_SKILL;
 			break;
-		case E_WARRIOR:
-			HP = 90;
-			MHP = HP;
-			SP = 0;
-			MSP = 30;
-			AP = 0;
-			MAP = 100;
-			HPG = 0;
-			SPG = 10;
-			ATK = 20;
-			DEF = 20;
-			SPD = 14;
-			EFC = 20;
-			skill = E_WARRIOR_SKILL;
-			break;
-		case E_HUNTER:
-			HP = 60;
-			MHP = HP;
-			SP = 30;
-			MSP = 30;
-			AP = 0;
-			MAP = 100;
-			HPG = 0;
-			SPG = 10;
-			ATK = 40;
-			DEF = 0;
-			SPD = 4;
-			EFC = 20;
-			skill = E_HUNTER_SKILL;
-			break;
-		case E_CHIEF:
-			HP = 60;
-			MHP = HP;
-			SP = 0;
-			MSP = 10;
-			AP = 0;
-			MAP = 100;
-			HPG = 0;
-			SPG = 10;
-			ATK = 0;
-			DEF = 0;
-			SPD = 10;
-			EFC = 20;
-			skill = E_CHIEF_SKILL;
-			
 		case WARRIOR_SKULL:
 			HP = 100;
 			MHP = HP;
@@ -261,41 +200,163 @@ public class Enemy extends Character{
 			MAP = 100;
 			HPG = 0;
 			SPG = 10;
-			ATK = 20;
-			DEF = 20;
-			SPD = 14;
-			EFC = 20;
+			ATK = 18;
+			DEF = 18;
+			SPD = 12;
+			EFC = 12;
 			skill = WARRIOR_SKULL_SKILL;
 			break;
-		case MAGIC_CREATURE:
-			HP = 200;
+			
+		case WARRIOR:
+			HP = 50;
 			MHP = HP;
 			SP = 0;
+			MSP = 0;
+			AP = 0;
+			MAP = 100;
+			HPG = 0;
+			SPG = 0;
+			ATK = 18;
+			DEF = 18;
+			SPD = 14;
+			EFC = 12;
+			skill = null;
+			break;
+		case HUNTER:
+			HP = 35;
+			MHP = HP;
+			SP = 0;
+			MSP = 0;
+			AP = 0;
+			MAP = 100;
+			HPG = 0;
+			SPG = 0;
+			ATK = 22;
+			DEF = 0;
+			SPD = 8;
+			EFC = 12;
+			skill = null;
+			break;
+		case E_WARRIOR:
+			HP = 100;
+			MHP = HP;
+			SP = 30;
+			MSP = 30;
+			AP = 0;
+			MAP = 100;
+			HPG = 0;
+			SPG = 10;
+			ATK = 18;
+			DEF = 18;
+			SPD = 16;
+			EFC = 18;
+			skill = E_WARRIOR_SKILL;
+			break;
+		case E_HUNTER:
+			HP = 70;
+			MHP = HP;
+			SP = 40;
 			MSP = 40;
 			AP = 0;
 			MAP = 100;
-			HPG = 20;
+			HPG = 0;
 			SPG = 10;
-			ATK = 40;
-			DEF = 20;
-			SPD = 15;
-			EFC = 30;
-			skill = MAGIC_CREATURE_SKILL;
+			ATK = 22;
+			DEF = 0;
+			SPD = 10;
+			EFC = 18;
+			skill = E_HUNTER_SKILL;
 			break;
-		case BLACK_MAGE:
-			HP = 300;
+		case UNDEAD_CHIEF:
+			HP = 200;
+			MHP = HP;
+			SP = 30;
+			MSP = 30;
+			AP = 0;
+			MAP = 100;
+			HPG = 0;
+			SPG = 10;
+			ATK = 22;
+			DEF = 22;
+			SPD = 14;
+			EFC = 18;
+			skill = UNDEAD_CHIEF_SKILL;
+			break;
+
+		case GOLLEM:
+			HP = 80;
+			MHP = HP;
+			SP = 0;
+			MSP = 0;
+			AP = 0;
+			MAP = 100;
+			HPG = 0;
+			SPG = 0;
+			ATK = 18;
+			DEF = 24;
+			SPD = 10;
+			EFC = 18;
+			skill = null;
+			break;
+		case WAND:
+			HP = 60;
 			MHP = HP;
 			SP = 0;
 			MSP = 10;
 			AP = 0;
 			MAP = 100;
-			HPG = 20;
-			SPG = 5;
-			ATK = 60;
+			HPG = 0;
+			SPG = 10;
+			ATK = 22;
+			DEF = 0;
+			SPD = 14;
+			EFC = 24;
+			skill = WAND_SKILL;
+			break;
+		case E_GOLLEM:
+			HP = 120;
+			MHP = HP;
+			SP = 0;
+			MSP = 30;
+			AP = 0;
+			MAP = 100;
+			HPG = 0;
+			SPG = 10;
+			ATK = 22;
+			DEF = 28;
+			SPD = 12;
+			EFC = 24;
+			skill = E_GOLLEM_SKILL;
+			break;
+		case E_WAND:
+			HP = 90;
+			MHP = HP;
+			SP = 0;
+			MSP = 10;
+			AP = 0;
+			MAP = 100;
+			HPG = 0;
+			SPG = 10;
+			ATK = 26;
+			DEF = 0;
+			SPD = 16;
+			EFC = 30;
+			skill = E_WAND_SKILL;
+			break;
+		case BLACK_MAGE:
+			HP = 300;
+			MHP = HP;
+			SP = 30;
+			MSP = 30;
+			AP = 100;
+			MAP = 100;
+			HPG = 0;
+			SPG = 10;
+			ATK = 24;
 			DEF = 30;
-			SPD = 20;
-			EFC = 50;
-			skill = MAGIC_CREATURE_SKILL;
+			SPD = 16;
+			EFC = 30;
+			skill = BLACK_MAGE_SKILL;
 			break;
 		}
 		originStatPointList = new ArrayList<>();

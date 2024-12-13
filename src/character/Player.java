@@ -24,7 +24,7 @@ public class Player extends Character{
 		name = "플레이어";
 		HP = 30;
 		MHP = HP;
-		SP = 15;
+		SP = 30;
 		MSP = SP;
 		AP = 0;
 		MAP = 100;
@@ -40,22 +40,40 @@ public class Player extends Character{
 		allSkillList = new ArrayList<>();
 		allSkillList.addAll(Arrays.asList(
 				Skill.ATTACK,
-				Skill.CHARGE_ATTACK,
-				Skill.FAST_ATTACK,
-				Skill.HEALING));
+				Skill.STRONG,
+				Skill.FAST,
+				Skill.TACKLE,
+				Skill.CHARGE,
+				Skill.DASH,
+				Skill.DEFENCE,
+				Skill.HEALING
+				));
 		allCommonItemList = new ArrayList<>();
 		allCommonItemList.addAll(Arrays.asList(
 				Item.POTION,
-				Item.SPEAR));
+				Item.SPEAR,
+				Item.ACID,
+				Item.POISON,
+				Item.FLAME,
+				Item.TIME
+				));
 		allRareItemList = new ArrayList<>();
 		allRareItemList.addAll(Arrays.asList(
-				Item.HIGH_POTION,
-				Item.METAL_SPEAR
+				Item.SUPER_POTION,
+				Item.SUPER_SPEAR,
+				Item.SUPER_ACID,
+				Item.SUPER_POISON,
+				Item.SUPER_FLAME,
+				Item.SUPER_TIME
 				));
 		allEpicItemList = new ArrayList<>();
 		allEpicItemList.addAll(Arrays.asList(
 				Item.MEGA_POTION,
-				Item.BAMBOO_SPEAR
+				Item.MEGA_SPEAR,
+				Item.MEGA_ACID,
+				Item.MEGA_POISON,
+				Item.MEGA_FLAME,
+				Item.MEGA_TIME
 				));
 		allLegendItemList = new ArrayList<>();
 		allLegendItemList.addAll(Arrays.asList(
@@ -75,7 +93,7 @@ public class Player extends Character{
 	public void levelUp(int count) {
 		int[] increasedPoint = new int[8];
 		String increasedStat = "";
-		for(int i=0; i<8*count; i++) {
+		for(int i=0; i<6*count; i++) {
 			int randomIndex = (int)(Math.random() * 8);
 			int point = 1;
 			switch(statList.get(randomIndex)) {
@@ -217,7 +235,7 @@ public class Player extends Character{
 				break;
 			case "SP":
 				point = player.SP + "/" + player.MSP;
-				description = "현재/최대 자원 수치입니다. 소모량보다 적으면 해당 스킬은 사용불가합니다.";
+				description = "현재/최대 기력 수치입니다. 소모량보다 적으면 해당 스킬은 사용불가합니다.";
 				break;
 			case "HPG":
 				point = String.valueOf(player.HPG);
@@ -251,16 +269,21 @@ public class Player extends Character{
 	public static class Skill{
 		
 		public static final String ATTACK = "기본 공격";
-		public static final String CHARGE_ATTACK = "강공격";
-		public static final String FAST_ATTACK = "속공";
+		public static final String STRONG = "강공격";
+		public static final String FAST = "속공";
+		public static final String TACKLE = "태클";
+		public static final String CHARGE = "집중";
+		public static final String DASH = "파고들기";
+		public static final String DEFENCE = "방어 태세";
 		public static final String HEALING = "치유술";
+		
 		final String PLAYER = "player";
 		final String ENEMY = "enemy";
 
 		public String name;
 		public int cost;
 		public String target;
-		public ArrayList<Integer> points = new ArrayList<>();
+		public ArrayList<Double> points = new ArrayList<>();
 		public String description;
 		
 		public Skill(String name, Player player) {
@@ -269,30 +292,63 @@ public class Player extends Character{
 			case ATTACK:
 				cost = 0;
 				target = ENEMY;
-				points.add(player.ATK);
-				description = "적에게 피해를 " + points.get(0) + " 줍니다.";
+				points.add(player.ATK * 1.0);
+				description = "적에게 피해를 " + points.get(0).intValue() + " 줍니다.";
 				break;
-			case CHARGE_ATTACK:
-				cost = 15;
+			case STRONG:
+				cost = 20;
 				target = ENEMY;
-				points.add((int)(player.ATK * 1.2));
-				points.add((int)(player.ATK * 2.4));
-				description = "적에게 피해를 " + points.get(0) + " 주고 AP를 " + points.get(1) + " 감소시킵니다.";
+				points.add(player.ATK * 1.5);
+				points.add(1.0);
+				points.add(1.0 + player.ATK * 0.02);
+				description = "적에게 피해를 " + points.get(0).intValue() + " 주고 " + points.get(1).intValue() + "턴간 SPD를 " + (int)(100 - (100 / points.get(2))) + "% 감소시킵니다.";
 				break;
-			case FAST_ATTACK:
-				cost = 15;
+			case FAST:
+				cost = 20;
 				target = ENEMY;
-				points.add(player.ATK);
-				points.add(1);
-				points.add(30);
-				description = "적에게 피해를 " + points.get(0) + " 주고 플레이어의 EFC가 " + points.get(1) + "턴간 " + points.get(2) + " 증가합니다.";
+				points.add(player.ATK * 1.0);
+				points.add(1.0);
+				points.add(player.SPD * 1.0);
+				description = "적에게 피해를 " + points.get(0).intValue() + " 주고 " + points.get(1).intValue() + "턴간 플레이어의 EFC가 " + points.get(2).intValue() + " 증가합니다.";
+				break;
+			case TACKLE:
+				cost = 20;
+				target = ENEMY;
+				points.add(1.0);
+				points.add(player.DEF * 1.0);
+				points.add((player.DEF + points.get(1)) * 1.0);
+				description = points.get(0).intValue() + "턴간 방어력을 " + points.get(1).intValue() + " 얻고 적에게 피해를 " + (int)((player.DEF + points.get(1)) * 1.0) + " 줍니다.";
+				break;
+			case CHARGE:
+				cost = 30;
+				target = PLAYER;
+				points.add(1.0);
+				points.add(player.ATK * 3.0);
+				points.add(player.SPD * 0.15);
+				description = points.get(0).intValue() + "턴간 플레이어의 ATK가 300% 증가하고 SPD가 15% 감소합니다.";
+				break;
+			case DASH:
+				cost = 30;
+				target = PLAYER;
+				points.add(2.0);
+				points.add(player.ATK * 0.5);
+				points.add(player.SPD * 0.5);
+				description = points.get(0).intValue() + "턴간 플레이어의 ATK가 50% 증가하고 SPD가 50% 증가합니다.";
+				break;
+			case DEFENCE:
+				cost = 30;
+				target = PLAYER;
+				points.add(3.0);
+				points.add(player.DEF * 3.0);
+				description = points.get(0).intValue() + "턴간 플레이어의 DEF가 " + points.get(1).intValue() + " 증가합니다.";
 				break;
 			case HEALING:
-				cost = 15;
+				cost = 30;
 				target = PLAYER;
-				points.add((int)(player.MHP * 0.5));
-				points.add(30);
-				description = "플레이어의 HP를 " + points.get(0) + " 회복하고 AP를 " + points.get(1) + " 회복합니다.";
+				points.add(player.MHP * 0.6);
+				points.add(2.0);
+				points.add(player.MHP * 0.2);
+				description = "플레이어의 HP를 " + points.get(0).intValue() + " 회복하고 " + points.get(1).intValue() + "턴간 추가로 " + points.get(2).intValue() + " 회복합니다.";
 				break;
 			}
 		}
@@ -303,11 +359,24 @@ public class Player extends Character{
 		
 		public static final String POTION = "포션";
 		public static final String SPEAR = "목재 창";
+		public static final String ACID = "산성 항아리";
+		public static final String POISON = "독 병";
+		public static final String FLAME = "점화 두루마리";
+		public static final String TIME = "초침";
 		
-		public static final String HIGH_POTION = "하이 포션";
+		public static final String SUPER_POTION = "슈퍼 포션";
+		public static final String SUPER_SPEAR = "강철 창";
+		public static final String SUPER_ACID = "부식 항아리";
+		public static final String SUPER_POISON = "맹독 병";
+		public static final String SUPER_FLAME = "불덩이 두루마리";
+		public static final String SUPER_TIME = "분침";
+
 		public static final String MEGA_POTION = "메가 포션";
-		public static final String METAL_SPEAR = "강철 창";
-		public static final String BAMBOO_SPEAR = "죽창";
+		public static final String MEGA_SPEAR = "죽창";
+		public static final String MEGA_ACID = "분해 항아리";
+		public static final String MEGA_POISON = "죽음 병";
+		public static final String MEGA_FLAME = "잿더미 두루마리";
+		public static final String MEGA_TIME = "시침";
 		
 		public static final String SOUL_ESSENCE = "영혼의 정수";
 		
@@ -316,7 +385,7 @@ public class Player extends Character{
 
 		public String name;
 		public String target;
-		public ArrayList<Integer> points = new ArrayList<>();
+		public ArrayList<Double> points = new ArrayList<>();
 		public String description;
 		
 		public Item(String name, Player player) {
@@ -324,40 +393,119 @@ public class Player extends Character{
 			switch (name) {
 			case POTION:
 				target = PLAYER;
-				points.add((int)(player.MHP * 0.3));
-				description = "플레이어의 HP를 " + points.get(0) + " 회복합니다.";
+				points.add(0.4);
+				description = "플레이어의 HP와 SP와 AP를 " + (int)(points.get(0) * 100) + "% 회복합니다.";
 				break;
-			case SPEAR:
-				target = ENEMY;
-				points.add(20);
-				description = "적에게 피해를 " + points.get(0) + " 줍니다.";
-				break;
-				
-			case HIGH_POTION:
+			case SUPER_POTION:
 				target = PLAYER;
-				points.add((int)(player.MHP * 0.5));
-				description = "플레이어의 HP를 " + points.get(0) + " 회복합니다.";
+				points.add(0.6);
+				description = "플레이어의 HP와 SP와 AP를 " + (int)(points.get(0) * 100) + "% 회복합니다.";
 				break;
 			case MEGA_POTION:
 				target = PLAYER;
-				points.add((int)(player.MHP * 0.7));
-				description = "플레이어의 HP를 " + points.get(0) + " 회복합니다.";
+				points.add(0.8);
+				description = "플레이어의 HP와 SP와 AP를 " + (int)(points.get(0) * 100) + "% 회복합니다.";
 				break;
-			case METAL_SPEAR:
+				
+			case SPEAR:
 				target = ENEMY;
-				points.add(40);
-				description = "적에게 피해를 " + points.get(0) + " 줍니다.";
+				points.add(20.0);
+				description = "적에게 피해를 " + points.get(0).intValue() + " 줍니다.";
 				break;
-			case BAMBOO_SPEAR:
+			case SUPER_SPEAR:
 				target = ENEMY;
-				points.add(60);
-				description = "적에게 피해를 " + points.get(0) + " 줍니다.";
+				points.add(45.0);
+				description = "적에게 피해를 " + points.get(0).intValue() + " 줍니다.";
+				break;
+			case MEGA_SPEAR:
+				target = ENEMY;
+				points.add(70.0);
+				description = "적에게 피해를 " + points.get(0).intValue() + " 줍니다.";
+				break;
+				
+			case ACID:
+				target = ENEMY;
+				points.add(3.0);
+				points.add(0.3);
+				points.add(0.5);
+				description = points.get(0).intValue() + "턴간 적의 공격력을 " + (int)(points.get(1) * 100) + "% 감소시키고 방어력을 " + (int)(points.get(2) * 100) + "% 감소시킵니다.";
+				break;
+			case SUPER_ACID:
+				target = ENEMY;
+				points.add(3.0);
+				points.add(0.4);
+				points.add(0.75);
+				description = points.get(0).intValue() + "턴간 적의 공격력을 " + (int)(points.get(1) * 100) + "% 감소시키고 방어력을 " + (int)(points.get(2) * 100) + "% 감소시킵니다.";
+				break;
+			case MEGA_ACID:
+				target = ENEMY;
+				points.add(3.0);
+				points.add(0.5);
+				points.add(1.0);
+				description = points.get(0).intValue() + "턴간 적의 공격력을 " + (int)(points.get(1) * 100) + "% 감소시키고 방어력을 " + (int)(points.get(2) * 100) + "% 감소시킵니다.";
+				break;
+				
+			case POISON:
+				target = ENEMY;
+				points.add(2.0);
+				points.add(0.16);
+				description = points.get(0).intValue() + "턴간 적에게 최대 체력의 " + (int)(points.get(1) * 100) + "%만큼 피해를 줍니다.";
+				break;
+			case SUPER_POISON:
+				target = ENEMY;
+				points.add(2.0);
+				points.add(0.20);
+				description = points.get(0).intValue() + "턴간 적에게 최대 체력의 " + (int)(points.get(1) * 100) + "%만큼 피해를 줍니다.";
+				break;
+			case MEGA_POISON:
+				target = ENEMY;
+				points.add(2.0);
+				points.add(0.24);
+				description = points.get(0).intValue() + "턴간 적에게 최대 체력의 " + (int)(points.get(1) * 100) + "%만큼 피해를 줍니다.";
+				break;
+				
+			case FLAME:
+				target = ENEMY;
+				points.add(8.0);
+				points.add(2.0);
+				description = "적에게 피해를 " + (int)(points.get(0) * 1.5) + " 주고 " + points.get(1).intValue() + "턴간 추가로 피해를 " + points.get(0).intValue() + " 줍니다.";
+				break;
+			case SUPER_FLAME:
+				target = ENEMY;
+				points.add(16.0);
+				points.add(2.0);
+				description = "적에게 피해를 " + (int)(points.get(0) * 1.5) + " 주고 " + points.get(1).intValue() + "턴간 추가로 피해를 " + points.get(0).intValue() + " 줍니다.";
+				break;
+			case MEGA_FLAME:
+				target = ENEMY;
+				points.add(24.0);
+				points.add(2.0);
+				description = "적에게 피해를 " + (int)(points.get(0) * 1.5) + " 주고 " + points.get(1).intValue() + "턴간 추가로 피해를 " + points.get(0).intValue() + " 줍니다.";
+				break;
+				
+			case TIME:
+				target = ENEMY;
+				points.add(1.0);
+				points.add(0.2);
+				description = "적의 AP를 0으로 만들고 " + points.get(0).intValue() + "턴간 속도를 " + (int)(points.get(1) * 100) + "% 감소시킵니다.";
+				break;
+			case SUPER_TIME:
+				target = ENEMY;
+				points.add(1.0);
+				points.add(0.4);
+				description = "적의 AP를 0으로 만들고 " + points.get(0).intValue() + "턴간 속도를 " + (int)(points.get(1) * 100) + "% 감소시킵니다.";
+				break;
+			case MEGA_TIME:
+				target = ENEMY;
+				points.add(1.0);
+				points.add(0.6);
+				description = "적의 AP를 0으로 만들고 " + points.get(0).intValue() + "턴간 속도를 " + (int)(points.get(1) * 100) + "% 감소시킵니다.";
 				break;
 				
 			case SOUL_ESSENCE:
 				target = PLAYER;
-				points.add(player.MHP);
-				description = "플레이어의 체력을 모두 회복합니다.";
+				points.add(1.0);
+				description = "플레이어의 HP와 SP를 전부 회복하고 즉시 행동합니다.";
 				break;
 			}
 		}
