@@ -2,6 +2,7 @@ package scene;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -33,7 +34,11 @@ public class Soul{
 		soul.setBorder(new LineBorder(Color.white, 1, false));
 		soul.setBounds(0, 0, 784, 350);
 		
-		ImageIcon icon = new ImageIcon();
+		ImageIcon icon = new ImageIcon("images/영혼.png");
+	    Image image = icon.getImage();
+	    double ratio = 0.85;
+	    image = image.getScaledInstance((int)(icon.getIconWidth() * ratio), (int)(icon.getIconHeight() * ratio), Image.SCALE_SMOOTH);
+	    icon = new ImageIcon(image);
 		
 		soulLabel = new JLabel(icon, JLabel.CENTER);
 		soulLabel.setBorder(new LineBorder(Color.white, THICKNESS+2, false));

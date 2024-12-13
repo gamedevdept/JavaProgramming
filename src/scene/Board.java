@@ -55,10 +55,12 @@ public class Board{
 	final static String REST = "@";
 	final static String SOUL = "#";
 	final static String BOSS = "!!!";
+
+	final static String STAT = "스탯";
 	final static String SKILL = "스킬";
 	final static String ITEM = "아이템";
 	
-	final int THICKNESS = 1;
+	final static int THICKNESS = 1;
 	
 	public Board() {
 		player = new Player();
@@ -132,14 +134,15 @@ public class Board{
 		currentFloorLabel.setFont(new Font("맑은 고딕", Font.BOLD, 24));
 		currentFloorLabel.setForeground(Color.white);
 		currentFloorLabel.setBounds(15, 10, 300, 30);
+		
 		currentFloor = 1;
 
-		generateFloor(currentFloor);
-		loadAction();
-		loadDetail(statPanel);
 		updateStat();
 		updateSkill();
 		updateItem();
+		generateFloor(currentFloor);
+		loadAction();
+		loadDetail(statPanel);
 		
 		SceneManager.loadScene(board);
 	}
@@ -158,6 +161,10 @@ public class Board{
 			}
 			else if(i == 1) {
 				tileLabelList.add(new TileLabel(SOUL, floorNum));
+				tileLabelList.get(i).setLocation(302+(i/4)*90, 125+(i%4+i/4-2)*90);
+			}
+			else if(i == 3) {
+				tileLabelList.add(new TileLabel(REST, floorNum));
 				tileLabelList.get(i).setLocation(302+(i/4)*90, 125+(i%4+i/4-2)*90);
 			}
 			else if(i == 6) {
@@ -202,6 +209,12 @@ public class Board{
 		floorPanel.add(notice1Label);
 		floorPanel.add(notice2Label);
 		floorPanel.add(notice3Label);
+		
+		for(ActionLabel label : actionLabelList) {
+			label.isSelected = false;
+			label.setBorder(new EmptyBorder(THICKNESS, THICKNESS, THICKNESS, THICKNESS));
+		}
+		loadDetail(statPanel);
 
 		updateFloorUI();
 	}
@@ -211,6 +224,7 @@ public class Board{
 
 		actionLabelList.add(new ActionLabel(SKILL, 0));
 		actionLabelList.add(new ActionLabel(ITEM, 1));
+		actionLabelList.add(new ActionLabel(STAT, 2));
 		
 		actionPanel.removeAll();
 		for(JLabel action : actionLabelList) {
@@ -544,19 +558,19 @@ public class Board{
 						setBorder(new LineBorder(Color.white, THICKNESS, false));
 						switch (type) {
 						case SKILL:
-//							updateSkill();
 							loadDetail(skillPanel);
 							break;
 						case ITEM:
-//							updateItem();
 							loadDetail(itemPanel);
+							break;
+						case STAT:
+							loadDetail(statPanel);
 							break;
 						}
 					}
 					else {
 						isSelected = false;
 						setBorder(new EmptyBorder(THICKNESS, THICKNESS, THICKNESS, THICKNESS));
-//						updateStat();
 						loadDetail(Board.statPanel);
 					}
 					setForeground(Color.white);
@@ -657,7 +671,7 @@ public class Board{
 		String name;
 		int cost;
 		String target;
-		ArrayList<Integer> points;
+		ArrayList<Double> points;
 		
 		JLabel nameLabel;
 		JLabel costLabel;
@@ -761,7 +775,7 @@ public class Board{
 
 		String name;
 		String target;
-		ArrayList<Integer> points;
+		ArrayList<Double> points;
 		
 		JLabel nameLabel;
 		JLabel descriptionLabel;

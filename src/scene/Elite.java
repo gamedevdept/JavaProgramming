@@ -11,26 +11,20 @@ import java.util.Arrays;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 import character.Character;
 import character.Enemy;
-import character.Player;
 import character.Character.Effect;
-import scene.Board.ItemLabel;
-import scene.Board.SkillLabel;
 
 public class Elite extends Battle{
 	
 	public Elite() {
-		playerPanel.setBounds(25, 25, 240, 250);
-		
 		enemyPanel.setBounds(275, 25, 490, 250);
 	}
 	
-	private JPanel createCharacterPanel(Character character) {
+	public JPanel createEnemyPanel(Character character) {
 		JPanel panel = new JPanel(null);
 	    panel.setBackground(Color.black);
 	    panel.setBounds(0, 0, 240, 250);
@@ -44,7 +38,6 @@ public class Elite extends Battle{
 	    			subName += " ";
 	    		}
 	    	}
-	    	System.out.println(character.name.split(" "));
 	    	icon = new ImageIcon("images/" + subName + ".png");
 	    }
 	    else {
@@ -92,7 +85,7 @@ public class Elite extends Battle{
 	    MSPLabel.setFont(new Font("Monospaced", Font.PLAIN, 12));
 	    MSPLabel.setForeground(Color.white);
 	    MSPLabel.setBorder(new LineBorder(Color.white, THICKNESS, false));
-	    MSPLabel.setBounds(0, 0, Math.min(BAR_MARGIN + character.MSP * 3, 239), BAR_THICKNESS);
+	    MSPLabel.setBounds(0, 0, Math.min(BAR_MARGIN + (int)(character.MSP * 1.5), 239), BAR_THICKNESS);
 	    SPPanel.add(MSPLabel);
 
 	    JLabel SPLabel = new JLabel();
@@ -117,32 +110,6 @@ public class Elite extends Battle{
 	    return panel;
 	}
 	
-	public void updateCharacterUI(JPanel panel, Character character) {
-		JPanel HPPanel = (JPanel)panel.getComponent(1);
-		JPanel SPPanel = (JPanel)panel.getComponent(2);
-		JPanel APPanel = (JPanel)panel.getComponent(3);
-
-		JLabel MHPLabel = (JLabel)HPPanel.getComponent(0);
-		JLabel HPLabel = (JLabel)HPPanel.getComponent(1);
-		JLabel MSPLabel = (JLabel)SPPanel.getComponent(0);
-		JLabel SPLabel = (JLabel)SPPanel.getComponent(1);
-		JLabel MAPLabel = (JLabel)APPanel.getComponent(0);
-		JLabel APLabel = (JLabel)APPanel.getComponent(1);
-	    
-		MHPLabel.setText("HP " + character.HP + "/" + character.MHP + " ");
-	    MHPLabel.setSize(Math.min(BAR_MARGIN + (int)(character.MHP * 1.5), 239), BAR_THICKNESS);
-	    HPLabel.setSize((character.MHP <= 0) ? 0 : (int)(1.0 * character.HP / character.MHP * (MHPLabel.getWidth() - BAR_MARGIN)), BAR_THICKNESS);
-	    
-	    MSPLabel.setText("SP " + character.SP + "/" + character.MSP + " ");
-	    MSPLabel.setSize(Math.min(BAR_MARGIN + (int)(character.MSP * 3), 239), BAR_THICKNESS);
-	    SPLabel.setSize((character.MSP <= 0) ? 0 : (int)(1.0 * character.SP / character.MSP * (MSPLabel.getWidth() - BAR_MARGIN)), BAR_THICKNESS);
-
-		character.MAP = 100 - character.EFC;
-	    MAPLabel.setText("AP " + character.AP + "/" + character.MAP + " ");
-	    MAPLabel.setSize(Math.min(BAR_MARGIN + (int)(character.MAP * 1.5), 239), BAR_THICKNESS);
-	    APLabel.setSize((character.MAP <= 0) ? 0 : (int)(1.0 * character.AP / character.MAP * (MAPLabel.getWidth() - BAR_MARGIN)), BAR_THICKNESS);
-	}
-	
 	public void loadBattle(int floorNum) {
 		Board.clearNotice();
 		
@@ -162,7 +129,7 @@ public class Elite extends Battle{
 				characterList.get(0).EFC));
 		characterList.get(0).effectList = new ArrayList<>();
 		characterList.get(0).MAP = 100 - characterList.get(0).EFC;
-		playerPanel.add(createCharacterPanel(characterList.get(0)));
+		playerPanel.add(createPlayerPanel(characterList.get(0)));
 
 		for(int i=0; i<1+floorNum/3; i++) {
 			int enemyRate = (int)(Math.random()*Enemy.allEliteList.get(floorNum-1).size());
@@ -178,25 +145,26 @@ public class Elite extends Battle{
 					characterList.get(i+1).EFC));
 			characterList.get(i+1).effectList = new ArrayList<>();
 			characterList.get(i+1).MAP = 100 - characterList.get(i+1).EFC;
-			enemyPanel.add(createCharacterPanel(characterList.get(i+1)));
+			enemyPanel.add(createEnemyPanel(characterList.get(i+1)));
 			enemyPanel.getComponent(i).setLocation(250-i*250, 0);
-		}
-		for(int i=1; i<=floorNum%3/2; i++) {
-			int enemyRate = (int)(Math.random()*Enemy.allEnemyList.get(floorNum-1).size());
-			characterList.add(new Enemy(Enemy.allEnemyList.get(floorNum-1).get(enemyRate)));
-			characterList.get(i+1).originStatPointList = new ArrayList<>(Arrays.asList(
-					characterList.get(i+1).MHP,
-					characterList.get(i+1).MSP,
-					characterList.get(i+1).HPG,
-					characterList.get(i+1).SPG,
-					characterList.get(i+1).ATK,
-					characterList.get(i+1).DEF,
-					characterList.get(i+1).SPD,
-					characterList.get(i+1).EFC));
-			characterList.get(i+1).effectList = new ArrayList<>();
-			characterList.get(i+1).MAP = 100 - characterList.get(i+1).EFC;
-			enemyPanel.add(createCharacterPanel(characterList.get(i+1)));
-			enemyPanel.getComponent(i).setLocation(250-i*250, 0);
+			
+			if(floorNum%2 == 0) {
+				enemyRate = (int)(Math.random()*Enemy.allEnemyList.get(floorNum-1).size());
+				characterList.add(new Enemy(Enemy.allEnemyList.get(floorNum-1).get(enemyRate)));
+				characterList.get(2).originStatPointList = new ArrayList<>(Arrays.asList(
+						characterList.get(2).MHP,
+						characterList.get(2).MSP,
+						characterList.get(2).HPG,
+						characterList.get(2).SPG,
+						characterList.get(2).ATK,
+						characterList.get(2).DEF,
+						characterList.get(2).SPD,
+						characterList.get(2).EFC));
+				characterList.get(2).effectList = new ArrayList<>();
+				characterList.get(2).MAP = 100 - characterList.get(2).EFC;
+				enemyPanel.add(Board.battle.createEnemyPanel(characterList.get(2)));
+				enemyPanel.getComponent(1).setLocation(60, 0);
+			}
 		}
 
 		for(Character character : characterList.subList(1, characterList.size())) {
@@ -222,239 +190,179 @@ public class Elite extends Battle{
 		startBattleLoop();
 	}
 	
-	public void startBattleLoop() {
-		battleTimer = new Timer(100, e -> {	
-			if(isPaused)
-				return;
+	public void winBattle() {
+		Board.updateNotice("정예 전투에서 승리했다!");
+		
+		resetToOriginStat(player);
+		player.levelUp(2);
+		updateCharacterUI((JPanel)playerPanel.getComponent(0), player);
+		updateBattleUI();
+		player.getItem(Math.min(Board.currentFloor - (int)(Math.random() * (1 + Board.currentFloor/2)), 2));
+		
+		battle.add(toBoardLabel);
+		battle.setComponentZOrder(toBoardLabel, 0);
+		toBoardLabel.addMouseListener(new MouseListener() {
 			
-			for(int i=0; i<characterList.size(); i++) {
-				JPanel panel = (JPanel)(i==0 ? playerPanel.getComponent(i) : enemyPanel.getComponent(i-1));
-				Character character = characterList.get(i);
-				
-				if(character.HP <= 0) {
-					if(character instanceof Player) {
-						playerPanel.remove(0);
-						updateBattleUI();
-						
-						Board.updateNotice("전투에서 패배했다...");
-						
-						battle.add(toTitieLabel);
-						battle.setComponentZOrder(toTitieLabel, 0);
-						toTitieLabel.addMouseListener(new MouseListener() {
-							
-							@Override
-							public void mouseReleased(MouseEvent e) {
-								SceneManager.loadScene(new Title());
-								battle.remove(toTitieLabel);
-								toTitieLabel.removeMouseListener(this);
-								toTitieLabel.setForeground(Color.white);
-								toTitieLabel.setBorder(new LineBorder(Color.white, THICKNESS, false));
-							}
-							
-							@Override
-							public void mousePressed(MouseEvent e) {
-								toTitieLabel.setForeground(Color.darkGray);
-								toTitieLabel.setBorder(new LineBorder(Color.darkGray, THICKNESS, false));
-								
-							}
-							
-							@Override
-							public void mouseExited(MouseEvent e) {
-								toTitieLabel.setForeground(Color.white);
-								toTitieLabel.setBorder(new LineBorder(Color.white, THICKNESS, false));
-							}
-							
-							@Override
-							public void mouseEntered(MouseEvent e) {
-								toTitieLabel.setForeground(Color.gray);
-								toTitieLabel.setBorder(new LineBorder(Color.gray, THICKNESS, false));
-							}
-							
-							@Override
-							public void mouseClicked(MouseEvent e) {
-							}
-						});
-						battleTimer.stop();
-						return;
-					}
-					if(character instanceof Enemy) {
-						if((character.name.charAt(character.name.length() - 1) - 0xAC00) % 28 > 0) {
-							Board.updateNotice(character.name + "을 처치했다!");
-						}
-						else {
-							Board.updateNotice(character.name + "를 처치했다!");
-						}
-						enemyPanel.remove(i-1);
-						updateBattleUI();
-						if(enemyPanel.getComponentCount() <= 0) {
-							Board.updateNotice("정예 전투에서 승리했다!");
-							
-							resetToOriginStat(player);
-							player.levelUp(2);
-							updateCharacterUI((JPanel)playerPanel.getComponent(0), player);
-							updateBattleUI();
-							switch(Board.currentFloor) {
-							case 1:
-								player.getItem(player.RARE);
-								break;
-							case 2:
-								if(Math.random() < 0.5) {
-									player.getItem(player.RARE);
-								}
-								else {
-									player.getItem(player.EPIC);
-								}
-								break;
-							case 3:
-								player.getItem(player.EPIC);
-								break;
-							}
-							
-							battle.add(toBoardLabel);
-							battle.setComponentZOrder(toBoardLabel, 0);
-							toBoardLabel.addMouseListener(new MouseListener() {
-								
-								@Override
-								public void mouseReleased(MouseEvent e) {
-									Board.loadFloor();
-									battle.remove(toBoardLabel);
-									toBoardLabel.removeMouseListener(this);
-									toBoardLabel.setForeground(Color.white);
-									toBoardLabel.setBorder(new LineBorder(Color.white, THICKNESS, false));
-								}
-								
-								@Override
-								public void mousePressed(MouseEvent e) {
-									toBoardLabel.setForeground(Color.darkGray);
-									toBoardLabel.setBorder(new LineBorder(Color.darkGray, THICKNESS, false));
-									
-								}
-								
-								@Override
-								public void mouseExited(MouseEvent e) {
-									toBoardLabel.setForeground(Color.white);
-									toBoardLabel.setBorder(new LineBorder(Color.white, THICKNESS, false));
-								}
-								
-								@Override
-								public void mouseEntered(MouseEvent e) {
-									toBoardLabel.setForeground(Color.gray);
-									toBoardLabel.setBorder(new LineBorder(Color.gray, THICKNESS, false));
-								}
-								
-								@Override
-								public void mouseClicked(MouseEvent e) {
-								}
-							});
-						}
-						battleTimer.stop();
-						return;
-					}
-				}
-				if(character.AP >= character.MAP) {
-					isPaused = true;
-					startTurn(character);
-					break;
-				}
-				if(character.AP < character.MAP) {
-					character.AP = Math.min(character.AP + character.SPD, character.MAP);
-					updateCharacterUI(panel, character);
-				}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				Board.loadFloor();
+				battle.remove(toBoardLabel);
+				toBoardLabel.removeMouseListener(this);
+				toBoardLabel.setForeground(Color.white);
+				toBoardLabel.setBorder(new LineBorder(Color.white, THICKNESS, false));
 			}
 			
-			updateBattleUI();
+			@Override
+			public void mousePressed(MouseEvent e) {
+				toBoardLabel.setForeground(Color.darkGray);
+				toBoardLabel.setBorder(new LineBorder(Color.darkGray, THICKNESS, false));
+				
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				toBoardLabel.setForeground(Color.white);
+				toBoardLabel.setBorder(new LineBorder(Color.white, THICKNESS, false));
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				toBoardLabel.setForeground(Color.gray);
+				toBoardLabel.setBorder(new LineBorder(Color.gray, THICKNESS, false));
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+			}
 		});
 		
-		for(SkillLabel label : Board.skillLabelList) {
-			label.nameLabel.removeMouseListener(label.outBattleListener);
-			label.nameLabel.addMouseListener(label.inBattleListener);
-		}
-		for(ItemLabel label : Board.itemLabelList) {
-			label.nameLabel.removeMouseListener(label.outBattleListener);
-			label.nameLabel.addMouseListener(label.inBattleListener);
-		}
-		
-		battleTimer.start();
+		battleTimer.stop();
 	}
 	
-	public void startTurn(Character character) {
-		for(Effect effect : character.effectList) {
-			effect.duration--;
-		}
-		
-		character.HP = Math.min(character.HP + character.HPG, character.MHP);
-		character.SP = Math.min(character.SP + character.SPG, character.MSP);
-		
-		if(character instanceof Player) {
-			JPanel pPanel = (JPanel)playerPanel.getComponent(0);
-			updateCharacterUI(pPanel, character);
-			
-			Board.updateNotice(character.name + "의 턴!");
-			
-			blinkCharacter(pPanel, 1, Color.white, null);
-			activateSkillLabel();
-			activateItemLabel();
-		}
-		if(character instanceof Enemy) {
-			Enemy enemy = (Enemy)character;
-			JPanel pPanel = (JPanel)playerPanel.getComponent(0);
-			JPanel ePanel = (JPanel)enemyPanel.getComponent(characterList.indexOf(enemy) - 1);
-			updateCharacterUI(ePanel, characterList.get(characterList.indexOf(enemy)));
-			if(enemy.skill != null && enemy.SP >= enemy.MSP) {
-				Board.updateNotice(enemy.name + "의 " + enemy.skill + "!");
-				blinkCharacter(ePanel, 3, Color.white, () -> {
-					int point;
-					switch(enemy.skill) {
-					case Enemy.E_SKELETON_SKILL:
-						point = (int)(enemy.ATK * 1.5 / (1 + player.DEF * 0.01));
-						player.HP = Math.max(player.HP - point, 0);
-						enemy.SP = 0;
-						Board.updateNotice(player.name + "에게 " + point + "의 피해!");
+	public void takeEnemyTurn(JPanel pPanel, JPanel ePanel, Enemy enemy) {
+		updateCharacterUI(ePanel, enemy);
+		if(enemy.skill != null && enemy.SP >= enemy.MSP) {
+			Board.updateNotice(enemy.name + "의 " + enemy.skill + "!");
+			blinkCharacter(ePanel, 3, Color.white, () -> {
+				switch(enemy.skill) {
+				case Enemy.E_SKELETON_SKILL:
+					enemy.SP = 0;
+					takeDamage(player, (int)(enemy.ATK * 1.5));
+					
+					blinkCharacter(pPanel, 3, null, () -> {
+						isPaused = false;
+					});
+					break;
+				case Enemy.E_SNAKE_SKILL:
+					enemy.SP = 0;
+					takeDamage(player, (int)(enemy.ATK * 1.5));
+					
+					blinkCharacter(pPanel, 3, null, () -> {
+						isPaused = false;
+					});
+					break;
+				case Enemy.E_MOUSE_SKILL:
+					enemy.SP = 0;
+					takeDamage(player, (int)(enemy.ATK * 1.5));
+					
+					blinkCharacter(pPanel, 3, null, () -> {
+						isPaused = false;
+					});
+					break;
+					
+				case Enemy.E_WARRIOR_SKILL:
+					enemy.SP = 0;
+					enemy.effectList.add(new Effect("ATK", 1, (int)(enemy.originStatPointList.get(4)*0.5)));
+					enemy.effectList.add(new Effect("SPD", 1, (int)(enemy.originStatPointList.get(6)*2.0)));
+					
+					isPaused = false;
+					break;
+				case Enemy.E_HUNTER_SKILL:
+					enemy.SP = 0;
+					enemy.effectList.add(new Effect("EFC", 3, enemy.MAP));
+					
+					isPaused = false;
+					break;
+					
+				case Enemy.E_GOLLEM_SKILL:
+					enemy.SP = 0;
+					enemy.HP = Math.min(enemy.HP + (int)(enemy.MHP * 0.5), enemy.MHP);
+
+					isPaused = false;
+					break;
+				case Enemy.E_WAND_SKILL:
+					enemy.SP = 0;
+					player.HP = Math.max(player.HP - enemy.ATK, 0);
+					Board.updateNotice(player.name + "에게 " + enemy.ATK + "의 관통 피해!");
+					
+					int rate = (int)(Math.random() * player.originStatPointList.size());
+					switch(rate) {
+					case 0:
+						player.effectList.add(new Effect("MHP", 99, -(int)(player.originStatPointList.get(rate) * 0.40)));
+						player.HP = Math.min(player.HP, player.MHP - (int)(player.originStatPointList.get(rate) * 0.40));
+						Board.updateNotice("죽음의 저주를 받아 최대 HP가 " + (int)(player.originStatPointList.get(rate) * 0.40) + " 감소한다!");
 						break;
-					case Enemy.E_SNAKE_SKILL:
-						point = (int)(enemy.ATK * 1.5 / (1 + player.DEF * 0.01));
-						player.HP = Math.max(player.HP - point, 0);
-						enemy.SP = 0;
-						Board.updateNotice(player.name + "에게 " + point + "의 피해!");
+					case 1:
+						player.effectList.add(new Effect("MSP", 99, -(int)(player.originStatPointList.get(rate) * 0.40)));
+						player.SP = Math.min(player.SP, player.MSP - (int)(player.originStatPointList.get(rate) * 0.40));
+						Board.updateNotice("고갈의 저주를 받아 최대 SP가 " + (int)(player.originStatPointList.get(rate) * 0.40) + " 감소한다!");
 						break;
-					case Enemy.E_MOUSE_SKILL:
-						point = (int)(enemy.ATK * 1.5 / (1 + player.DEF * 0.01));
-						player.HP = Math.max(player.HP - point, 0);
-						enemy.SP = 0;
-						Board.updateNotice(player.name + "에게 " + point + "의 피해!");
+					case 2:
+						player.effectList.add(new Effect("HPG", 99, -(int)(player.originStatPointList.get(rate) * 1.0)));
+						Board.updateNotice("부패의 저주를 받아 HPG가 " + (int)(player.originStatPointList.get(rate) * 1.0) + " 감소한다!");
+						break;
+					case 3:
+						player.effectList.add(new Effect("SPG", 99, -(int)(player.originStatPointList.get(rate) * 1.0)));
+						Board.updateNotice("탈진의 저주를 받아 SPG가 " + (int)(player.originStatPointList.get(rate) * 1.0) + " 감소한다!");
+						break;
+					case 4:
+						player.effectList.add(new Effect("ATK", 99, -(int)(player.originStatPointList.get(rate) * 0.40)));
+						Board.updateNotice("빈약의 저주를 받아 ATK가 " + (int)(player.originStatPointList.get(rate) * 0.40) + " 감소한다!");
+						break;
+					case 5:
+						player.effectList.add(new Effect("DEF", 99, -(int)(player.originStatPointList.get(rate) * 1.0)));
+						Board.updateNotice("허약의 저주를 받아 DEF가 " + (int)(player.originStatPointList.get(rate) * 1.0) + " 감소한다!");
+						break;
+					case 6:
+						player.effectList.add(new Effect("SPD", 99, -(int)(player.originStatPointList.get(rate) * 0.40)));
+						Board.updateNotice("둔화의 저주를 받아 SPD가 " + (int)(player.originStatPointList.get(rate) * 0.40) + " 감소한다!");
+						break;
+					case 7:
+						player.effectList.add(new Effect("EFC", 99, -(int)(player.originStatPointList.get(rate) * 1.0)));
+						Board.updateNotice("노화의 저주를 받아 EFC가 " + (int)(player.originStatPointList.get(rate) * 1.0) + " 감소한다!");
 						break;
 					}
 
-					updateCharacterUI(pPanel, player);
-					updateCharacterUI(ePanel, characterList.get(characterList.indexOf(enemy)));
-					updateBattleUI();
-					
 					blinkCharacter(pPanel, 3, null, () -> {
 						isPaused = false;
 					});
-				});
-			}
-			else {
-				Board.updateNotice(enemy.name + "의 공격!");
-				blinkCharacter(ePanel, 1, Color.white, () -> {
-					int point = (int)(enemy.ATK / (1 + player.DEF * 0.01));
-					player.HP = Math.max(player.HP - point, 0);
-					Board.updateNotice(player.name + "에게 " + point + "의 피해!");
+					break;
+				}
 
-					updateCharacterUI(pPanel, player);
-					updateCharacterUI(ePanel, characterList.get(characterList.indexOf(enemy)));
-					updateBattleUI();
-					
-					blinkCharacter(pPanel, 3, null, () -> {
-						isPaused = false;
-					});
-				});
-			}
+				applyEffect(player);
+				updateEffect(enemy);
+				updateCharacterUI(pPanel, player);
+				updateCharacterUI(ePanel, characterList.get(characterList.indexOf(enemy)));
+				updateBattleUI();
+				
+			});
 		}
-		
-		applyEffect(character);
-		
-		character.AP = 0;
+		else {
+			Board.updateNotice(enemy.name + "의 공격!");
+			blinkCharacter(ePanel, 1, Color.white, () -> {
+				takeDamage(player, enemy.ATK);
+
+				applyEffect(player);
+				updateEffect(enemy);
+				updateCharacterUI(pPanel, player);
+				updateCharacterUI(ePanel, characterList.get(characterList.indexOf(enemy)));
+				updateBattleUI();
+				
+				blinkCharacter(pPanel, 3, null, () -> {
+					isPaused = false;
+				});
+			});
+		}
 	}
 	
 }

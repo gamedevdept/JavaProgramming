@@ -11,8 +11,8 @@ import javax.swing.border.LineBorder;
 public class Intro extends JPanel{
 
 	ArrayList<String> textList;
-	JLabel introLabel;
-	JLabel introText;
+	JLabel introImageLabel;
+	JLabel introTextLabel;
 	
 	final int THICKNESS = 1;
 	
@@ -40,18 +40,16 @@ public class Intro extends JPanel{
 	    image = image.getScaledInstance((int)(icon.getIconWidth() * ratio), (int)(icon.getIconHeight() * ratio), Image.SCALE_SMOOTH);
 	    icon = new ImageIcon(image);
 		
-		introLabel = new JLabel(icon, JLabel.CENTER);
-		introLabel.setFont(new Font("맑은 고딕", Font.BOLD, 32));
-		introLabel.setForeground(Color.white);
-		introLabel.setBorder(new LineBorder(Color.white, 3, false));
-		introLabel.setBounds(190, 50, 400, 300);
-		add(introLabel);
+		introImageLabel = new JLabel(icon, JLabel.CENTER);
+		introImageLabel.setBorder(new LineBorder(Color.white, 3, false));
+		introImageLabel.setBounds(190, 50, 400, 300);
+		add(introImageLabel);
 		
-		introText = new JLabel(textList.get(0));
-		introText.setFont(new Font("맑은 고딕", Font.PLAIN, 16));
-		introText.setForeground(Color.white);
-		introText.setBounds(200, 380, 500, 150);
-		add(introText);
+		introTextLabel = new JLabel(textList.get(0));
+		introTextLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 16));
+		introTextLabel.setForeground(Color.white);
+		introTextLabel.setBounds(200, 380, 500, 150);
+		add(introTextLabel);
 		
 		addMouseListener(new MouseListener() {
 			
@@ -62,7 +60,7 @@ public class Intro extends JPanel{
 				}
 				else {
 					textList.remove(0);
-					introText.setText(textList.get(0));
+					introTextLabel.setText(textList.get(0));
 				}
 			}
 			

@@ -2,6 +2,7 @@ package scene;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -33,7 +34,11 @@ public class Rest{
 		rest.setBorder(new LineBorder(Color.white, 1, false));
 		rest.setBounds(0, 0, 784, 350);
 		
-		ImageIcon icon = new ImageIcon();
+		ImageIcon icon = new ImageIcon("images/휴식.png");
+	    Image image = icon.getImage();
+	    double ratio = 0.35;
+	    image = image.getScaledInstance((int)(icon.getIconWidth() * ratio), (int)(icon.getIconHeight() * ratio), Image.SCALE_SMOOTH);
+	    icon = new ImageIcon(image);
 		
 		restLabel = new JLabel(icon, JLabel.CENTER);
 		restLabel.setBorder(new LineBorder(Color.white, THICKNESS+2, false));
@@ -56,8 +61,8 @@ public class Rest{
 		restList.clear();
 		restList.addAll(Arrays.asList(
 				"휴식처를 발견했다!",
-				"잠시 쉬며 체력을 회복했다...",
-				"",
+				"잠시 쉬며 HP과 SP를 조금 회복했다...",
+				"최대 HP와 SP가 6 증가했다...",
 				"주위를 살펴보니 뭔가가 떨어져 있었다...",
 				"",
 				"슬슬 떠날 때가 되었다..."));
@@ -77,8 +82,9 @@ public class Rest{
 					if (restList.get(0) != "" ) Board.updateNotice(restList.get(0));
 					restList.remove(0);
 					
-					player.HP = player.MHP;
-					player.SP = player.MSP;
+					player.HP = Math.min(player.HP + (int)(player.MHP*0.2), player.MHP);
+					player.SP = Math.min(player.SP + (int)(player.MSP*0.2), player.MSP);
+
 					Board.updateStat();
 					Board.updateDetailUI();
 					break;
@@ -86,25 +92,22 @@ public class Rest{
 					if (restList.get(0) != "" ) Board.updateNotice(restList.get(0));
 					restList.remove(0);
 
-					player.MHP += 4;
-					player.HP += 4;
-					player.MSP += 4;
-					player.SP += 4;
+					player.MHP += 6;
+					player.HP += 6;
+					player.MSP += 6;
+					player.SP += 6;
 					
-					Board.updateNotice("최대 체력과 SP가 6 증가했다!");
 					Board.updateStat();
 					Board.updateDetailUI();
 					break;
 				case 3:
 					if (restList.get(0) != "" ) Board.updateNotice(restList.get(0));
 					restList.remove(0);
-					
 					break;
 				case 2:
 					if (restList.get(0) != "" ) Board.updateNotice(restList.get(0));
 					restList.remove(0);
-					
-					player.getItem((int)(Math.random() * 3));
+					player.getItem(Math.min(Board.currentFloor - (int)(Math.random() * (1 + Board.currentFloor/2)), 2));
 					break;
 				case 1:
 					if (restList.get(0) != "" ) Board.updateNotice(restList.get(0));

@@ -40,8 +40,8 @@ public class Title extends JPanel{
 		add(manualLabel);
 		
 		manual = new JLabel("<html>플레이어는 탐험가가 되어 탑을 탐험하게 됩니다.<br>"
-				+ "<br>탑은 3층까지 있으며 각 층엔 5개의 방과 보스방이 있습니다.<br>"
-				+ "<br>각 방은 클릭하여 탐색할 수 있고 탐색 시 무작위 이벤트가 발생합니다.<br>"
+				+ "<br>탑은 3층까지 있으며 각 층엔 8개의 방과 보스방이 있습니다.<br>"
+				+ "<br>각 방은 클릭하여 탐색할 수 있고 방의 아이콘에 따라 탐색 시 발생하는 이벤트가 달라집니다.<br>"
 				+ "<br>보스를 처치하면 다음 층으로 이동합니다.<br>"
 				+ "<br>3층의 보스를 처치해 게임을 클리어하세요.</html>");
 		manual.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
